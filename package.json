@@ -2,7 +2,7 @@
   "name": "ml",
   "version": "1.0.0",
   "description": "Middleware for ML frontend test project",
-  "main": "index.js",
+  "main": "core/index.js",
   "dependencies": {
     "axios": "^0.21.0",
     "cors": "^2.8.5",
@@ -13,7 +13,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node -r dotenv/config index",
+    "start": "node -r dotenv/config core/index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nicolas Lopez",
