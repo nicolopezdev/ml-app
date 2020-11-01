@@ -1,13 +1,14 @@
 const NAME = process.env.SIGNATURE_NAME;
 const LASTNAME = process.env.SIGNATURE_LASTNAME;
 
-const formatResponse = (payload) => {
+const formatResponse = (payload, categories) => {
     return payload.map(item => {
         return {
             "author": {
                 "name": NAME,
                 "lastname": LASTNAME
             },
+            "categories": categories,
             "item": {
                 "id": item.id,
                 "title": item.title,
@@ -47,7 +48,12 @@ const formatProduct = (product) => {
     }
 }
 
+const formatCategory = (categories) => {
+    return categories.path_from_root.map(category => category.name);
+}
+
 module.exports = {
     formatResponse,
-    formatProduct
+    formatProduct,
+    formatCategory
 }
