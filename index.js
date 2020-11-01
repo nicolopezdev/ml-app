@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
 const port = process.env.SERVER_PORT;
-const api = require('./api/index');
+const routes = require('./routes/index');
 
 (function bootstrap() {
 
@@ -21,7 +21,7 @@ const api = require('./api/index');
     app.use(cors())
 
     // API routes
-    app.use('/api', api.router);
+    app.use('/api', routes.router);
 
     app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
 })();
