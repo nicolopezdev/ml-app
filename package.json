@@ -12,10 +12,19 @@
     "nodemon": "^2.0.6",
     "winston": "^3.3.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^26.6.1",
+    "supertest": "^6.0.0"
+  },
   "scripts": {
     "start": "nodemon -r dotenv/config core/index",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest core/"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "../core/node_modules/"
+    ]
   },
   "author": "Nicolas Lopez",
   "license": "MIT"

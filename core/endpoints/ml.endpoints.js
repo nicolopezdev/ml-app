@@ -1,6 +1,5 @@
 const request = require('axios');
 const logger = require('../common/logger');
-const { returnCommonResponse } = require('../common/common');
 const { formatResponse, formatProduct, formatCategory } = require('../helpers/helpers');
 const URL = process.env.ML_BASE_API_URL;
 
@@ -18,15 +17,15 @@ const fetchItems = async(query) => {
     } catch (e) {
         const errorMessage = `Error getting products ${e}`;
         logger.error(errorMessage);
-        return returnCommonResponse(res, errorMessage, 500);
+        throw Error(errorMessage);
     }
 
-    if (items.data.results) {
+    if (items.data.results.length > 0) {
         const category = await fetchCategoryById(items.data.results[0].category_id);
         return formatResponse(items.data.results, category);
     }
 
-    return items;
+    return items.data.results;
 };
 
 
@@ -40,7 +39,7 @@ const fetchItemById = async (id) => {
     } catch (e) {
         const errorMessage = `Error getting data for product by ID ${e}`;
         logger.error(errorMessage);
-        return returnCommonResponse(res, errorMessage, 500);
+        throw Error(errorMessage);
     }
 };
 
@@ -54,21 +53,20 @@ const fetchItemDescriptionById = async (id) => {
     } catch(e) {
         const errorMessage = `Error getting description for product ${e}`;
         logger.error(errorMessage);
-        return returnCommonResponse(res, errorMessage, 500);
+        throw Error(errorMessage);
     }
 };
 
 const fetchCategoryById = async (id) => {
     logger.info(`Fetching category data for ID: ${id}`);
     const category_url = URL + `/categories/${id}`;
-    
+
     try {
         category_data = await request.get(category_url);
         return formatCategory(category_data.data);
     } catch(e) {
         const errorMessage = `Error getting category by ID ${e}`;
         logger.error(errorMessage);
-        return returnCommonResponse(res, errorMessage, 500);
     }
 }
 

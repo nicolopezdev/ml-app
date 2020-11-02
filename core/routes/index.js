@@ -6,6 +6,7 @@ const { fetchItems, fetchItemById, fetchItemDescriptionById, fetchCategoryById }
 
 router.get('/items', async(req, res, next) => {
     const queryString = req.query.q;
+    let items
     
     if (!queryString) {
         const message = `You have not specified any product to search`;
@@ -13,13 +14,22 @@ router.get('/items', async(req, res, next) => {
         return returnCommonResponse(res, message, 400);
     }
     
-    const items = await fetchItems(queryString);
+    try {
+        items = await fetchItems(queryString);
+    } catch(e) {
+        const errorMessage = `Error getting items for query ${queryString}. ${e}`;
+        logger.error(errorMessage);
+        return returnCommonResponse(res, errorMessage, 500);
+    }
+
     res.json(items);
     next();
 });
 
 router.get('/items/:id', async(req, res, next) => {
     const id = req.params.id;
+    let item;
+    let description;
     
     if (!id) {
         const message = `You have not specified any product ID`;
@@ -27,24 +37,59 @@ router.get('/items/:id', async(req, res, next) => {
         return returnCommonResponse(res, message, 400);
     }
     
-    let item = await fetchItemById(id);
-    let description = await fetchItemDescriptionById(id);
+    try {
+        item = await fetchItemById(id);
+    } catch(e) {
+        const errorMessage = `Error getting data for item ${id}. ${e}`;
+        logger.error(errorMessage);
+        return returnCommonResponse(res, errorMessage, 500);
+    }
+    
+    if (!item) {
+        const message = `Did not found any product with ID ${id}`;
+        logger.info(message);
+        return returnCommonResponse(res, message, 404);
+    }
+
+    try {
+        description = await fetchItemDescriptionById(id);
+    } catch(e) {
+        const errorMessage = `Error getting description for item ${id}. ${e}`;
+        logger.error(errorMessage);
+        return returnCommonResponse(res, errorMessage, 500);
+    }
+
     item.description = description;
     res.json(item);
     next();
+    
 });
 
 // Endpoint to get breadcrumb data
 router.get('/categories/:id', async(req, res, next) => {
     const id = req.params.id;
-
+    let category
+    
     if (!id) {
         const message = `You have not specified any category ID`;
         logger.info(message);
         return returnCommonResponse(res, message, 400);
     }
-
-    let category = await fetchCategoryById(id);
+    
+    try {
+        category = await fetchCategoryById(id);
+    } catch(e) {
+        const errorMessage = `Error getting category for Id ${id}. ${e}`;
+        logger.error(errorMessage);
+        return returnCommonResponse(res, errorMessage, 500);
+    }
+    
+    if (!category) {
+        const message = `Did not found any category with ID ${id}`;
+        logger.info(message);
+        return returnCommonResponse(res, message, 404);
+    }
+    
     res.json(category);
     next();
 });
