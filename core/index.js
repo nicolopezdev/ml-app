@@ -7,21 +7,22 @@ const cors = require('cors');
 const port = process.env.SERVER_PORT;
 const routes = require('./routes/index');
 
-(function bootstrap() {
 
-    // parse application/x-www-form-urlencoded
-    app.use(bodyParser.urlencoded({ extended: false }));
 
-    // Parse application/json
-    app.use(bodyParser.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 
-    // Security
-    app.use(helmet());
-    app.use(helmet.xssFilter());
-    app.use(cors())
+// Parse application/json
+app.use(bodyParser.json());
 
-    // API routes
-    app.use('/api', routes.router);
+// Security
+app.use(helmet());
+app.use(helmet.xssFilter());
+app.use(cors());
 
-    app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
-})();
+// API routes
+app.use('/api', routes.router);
+
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
+
+module.exports = app;

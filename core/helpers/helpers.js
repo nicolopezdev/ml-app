@@ -27,6 +27,15 @@ const formatResponse = (payload, categories) => {
 }
 
 const formatProduct = (product) => {
+    const pictures = product.pictures.map(picture => {
+        return {
+            id: picture.id,
+            url: picture.url,
+            size: picture.size,
+            max_size: picture.max_size
+        }
+    });
+
     return {
         "author": {
             "name": NAME,
@@ -40,7 +49,7 @@ const formatProduct = (product) => {
                 "amount": Math.trunc(product.price),
                 "decimals":(product.price - Math.floor(product.price))
             },
-            "picture": product.thumbnail,
+            "pictures": pictures,
             "condition": product.condition,
             "free_shipping": product.shipping.free_shipping,
             "sold_quantity": product.sold_quantity
