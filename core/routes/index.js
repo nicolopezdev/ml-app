@@ -2,11 +2,17 @@ const express = require('express');
 const router = express.Router();
 const logger = require('../common/logger');
 const { returnCommonResponse } = require('../common/common');
-const { fetchItems, fetchItemById, fetchItemDescriptionById, fetchCategoryById } = require('../endpoints/ml.endpoints');
+const { fetchItems,
+    fetchItemById,
+    fetchItemDescriptionById,
+    fetchCategoryById
+} = require('../endpoints/ml.endpoints');
 
 router.get('/items', async(req, res, next) => {
-    const queryString = req.query.q;
-    let items
+    const queryString = req.query['q'];
+    const limit = req.query['limit'];
+    const offset = req.query['offset'];
+    let items;
     
     if (!queryString) {
         const message = `You have not specified any product to search`;
@@ -15,9 +21,9 @@ router.get('/items', async(req, res, next) => {
     }
     
     try {
-        items = await fetchItems(queryString);
+        items = await fetchItems(queryString, limit, offset);
     } catch(e) {
-        const errorMessage = `Error getting items for query ${queryString}. ${e}`;
+        const errorMessage = `Error getting items for query ${queryString}. ${e.message}`;
         logger.error(errorMessage);
         return returnCommonResponse(res, errorMessage, 500);
     }

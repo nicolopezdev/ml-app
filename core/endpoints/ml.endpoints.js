@@ -3,26 +3,29 @@ const logger = require('../common/logger');
 const { formatResponse, formatProduct, formatCategory } = require('../helpers/helpers');
 const URL = process.env.ML_BASE_API_URL;
 
-const fetchItems = async(query) => {
-    logger.info(`Fetching products that match: ${query}`);
+const fetchItems = async(query, limit, offset) => {
+    logger.info(`Fetching products that match: ${query} with limit: ${limit ? limit: 'NO LIMIT'}, and offset ${offset ? offset : 'NO OFFSET'}`);
     const items_query_url = URL + '/sites/MLA/search';
     let items;
+
     
     try {
         items = await request.get(items_query_url, {
             params: {
-                q: query
+                q: query,
+                limit: limit,
+                offset: offset
             }
         });
     } catch (e) {
-        const errorMessage = `Error getting products ${e}`;
+        const errorMessage = `${e.response.data.message}`;
         logger.error(errorMessage);
         throw Error(errorMessage);
     }
 
     if (items.data.results.length > 0) {
         const category = await fetchCategoryById(items.data.results[0].category_id);
-        return formatResponse(items.data.results, category);
+        return formatResponse(items.data, category);
     }
 
     return items.data.results;

@@ -2,12 +2,13 @@ const NAME = process.env.SIGNATURE_NAME;
 const LASTNAME = process.env.SIGNATURE_LASTNAME;
 
 const formatResponse = (payload, categories) => {
-    return payload.map(item => {
+    return payload.results.map(item => {
         return {
             "author": {
                 "name": NAME,
                 "lastname": LASTNAME
             },
+            "paging": payload.paging,
             "categories": categories,
             "item": {
                 "id": item.id,
